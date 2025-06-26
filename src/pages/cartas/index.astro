@@ -54,35 +54,37 @@ const cards: CollectionEntry<'cards'>[] = await getCollection('cards');
   
   .card-grid {
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--space-8);
-    justify-items: center;
+    justify-content: center;
     padding: var(--space-4);
+    margin: 0 auto;
+    max-width: var(--container-xl);
   }
   
   .card-grid a {
     text-decoration: none;
-    display: block;
-    width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
   }
   
-  @media (min-width: 640px) {
-    .card-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  .card-item {
+    margin: 0 auto;
   }
   
-  @media (min-width: 1024px) {
+  @media (max-width: 640px) {
     .card-grid {
-      grid-template-columns: repeat(3, 1fr);
+      padding: var(--space-2);
+      gap: var(--space-6);
     }
   }
   
   @media (min-width: 1280px) {
     .card-grid {
-      grid-template-columns: repeat(4, 1fr);
+      max-width: var(--container-xl);
     }
   }
 </style>
