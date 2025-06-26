@@ -1,0 +1,191 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+---
+
+<Layout title="Cómo jugar | Pixel Forge" description="Aprende a jugar Pixel Forge, el juego de cartas coleccionables creado por el equipo de GTM.">
+  <div class="how-to-play-container">
+    <div class="container">
+      <PageHeader regularText="Cómo jugar a" highlightedText="Pixel Forge" />
+
+      <div class="how-to-play-content">
+        <p class="intro-text"><strong>Pixel Forge</strong> es un juego de cartas coleccionables donde cada carta representa un personaje famoso de los videojuegos, con habilidades únicas y estadísticas propias. El objetivo es derrotar al oponente usando estrategia, fuerza y habilidades especiales.</p>
+        
+        <div class="game-section">
+          <h2 class="together"><span class="section-number">01</span> Preparación del juego</h2>
+          <div class="section-content">
+            <ul class="game-list">
+              <li>Cada jugador necesita un mazo con 10 cartas.</li>
+              <li>Se reparten 3 cartas al azar al comenzar.</li>
+              <li>Decidid quién empieza lanzando una moneda o con un dado.</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="game-section">
+          <h2 class="together"><span class="section-number">02</span> Turnos de juego</h2>
+          <div class="section-content">
+            <p>En tu turno puedes:</p>
+            <ul class="game-list">
+              <li>Robar una carta.</li>
+              <li>Jugar hasta dos cartas de tu mano.</li>
+              <li>Atacar con tus cartas ya en juego.</li>
+              <li>Usar habilidades especiales.</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="game-section">
+          <h2 class="together"><span class="section-number">03</span> Combate</h2>
+          <div class="section-content">
+            <p>Cuando atacas:</p>
+            <ul class="game-list">
+              <li>Elige una de tus cartas y una carta del oponente.</li>
+              <li>Compara el ataque de tu carta con la defensa de la carta enemiga.</li>
+              <li>Si tu ataque es mayor, la carta enemiga recibe daño.</li>
+              <li>Si una carta recibe daño igual o mayor a sus puntos de vida, es destruida.</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="game-section">
+          <h2 class="together"><span class="section-number">04</span> Habilidades especiales</h2>
+          <div class="section-content">
+            <p>Cada carta tiene una habilidad única que puede cambiar las reglas del juego. Algunas habilidades comunes son:</p>
+            <ul class="game-list special-abilities">
+              <li><strong>Escudo</strong>: Reduce el daño recibido.</li>
+              <li><strong>Veneno</strong>: Causa daño adicional cada turno.</li>
+              <li><strong>Curación</strong>: Restaura puntos de vida.</li>
+              <li><strong>Robo</strong>: Te permite robar cartas adicionales.</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="game-section">
+          <h2 class="together"><span class="section-number">05</span> Victoria</h2>
+          <div class="section-content">
+            <p>Ganas la partida si:</p>
+            <ul class="game-list victory-conditions">
+              <li>Destruyes todas las cartas de tu oponente.</li>
+              <li>Tu oponente no puede robar más cartas de su mazo.</li>
+            </ul>
+            
+            <div class="conclusion">
+              <p>¡Buena suerte y que gane el mejor estratega!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .how-to-play-container {
+    padding: var(--space-8) 0;
+  }
+  
+  /* Estilos de header movidos al componente PageHeader */
+  
+  
+  .how-to-play-content {
+    max-width: var(--container-md);
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .intro-text {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-8);
+    line-height: var(--line-height-relaxed);
+  }
+  
+  .game-section {
+    margin-bottom: var(--space-10);
+  }
+  
+  .game-section h2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--space-6);
+    color: var(--color-text-light);
+  }
+  
+  .section-number {
+    display: inline-block;
+    background-color: var(--color-primary);
+    color: var(--color-text-muted);
+    width: 46px;
+    height: 46px;
+    line-height: 46px;
+    text-align: center;
+    border-radius: 50%;
+    margin-right: var(--space-4);
+    font-weight: var(--font-weight-bold);
+  }
+  
+  .section-content {
+    padding-left: var(--space-10);
+  }
+  
+  .game-list {
+    list-style-type: none;
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+  
+  .game-list li {
+    position: relative;
+    margin-bottom: var(--space-3);
+    padding-left: var(--space-6);
+  }
+  
+  .game-list li:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+  }
+  
+  .special-abilities li strong {
+    color: var(--color-primary);
+  }
+  
+  .victory-conditions li {
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .conclusion {
+    margin-top: var(--space-8);
+    text-align: center;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary);
+  }
+  
+  @media (max-width: 768px) {
+    .how-to-play-content {
+      padding: var(--space-6);
+    }
+    
+    .section-content {
+      padding-left: var(--space-4);
+    }
+    
+    .game-list {
+      padding-left: var(--space-2);
+    }
+    
+    .intro-text {
+      font-size: var(--font-size-base);
+    }
+  }
+</style>

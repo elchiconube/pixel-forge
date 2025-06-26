@@ -1,0 +1,87 @@
+---
+interface Props {
+  /**
+   * Título completo de la página (alternativa a regularText/highlightedText)
+   */
+  title?: string;
+  
+  /**
+   * Texto regular (no resaltado)
+   */
+  regularText?: string;
+  
+  /**
+   * Texto resaltado con color primario
+   */
+  highlightedText?: string;
+  
+  /**
+   * Texto que va después del texto resaltado
+   */
+  afterText?: string;
+  
+  /**
+   * Texto que aparece debajo del título principal (subtitulo)
+   */
+  subtitle?: string;
+}
+
+const { title, highlightedText, regularText, afterText, subtitle } = Astro.props;
+
+// Si se proporcionan regularText y highlightedText, usamos esos valores
+// Si no, intentamos dividir el título en dos partes usando la última aparición de "a "
+let finalRegularText = regularText;
+let finalHighlightedText = highlightedText;
+let finalAfterText = afterText;
+
+if (!regularText && !highlightedText && title) {
+  const lastIndex = title.lastIndexOf(' a ');
+  if (lastIndex !== -1) {
+    finalRegularText = title.substring(0, lastIndex + 2); // +2 para incluir "a "
+    finalHighlightedText = title.substring(lastIndex + 2);
+  } else {
+    finalRegularText = title;
+  }
+}
+---
+
+<header class="page-header">
+  <h1 class="text-3xl together">
+    {finalRegularText && <span>{finalRegularText}</span>}
+    {finalHighlightedText && <span class="text-primary">{finalHighlightedText}</span>}
+    {finalAfterText && <span>{finalAfterText}</span>}
+  </h1>
+  {subtitle && <p class="subtitle">{subtitle}</p>}
+  <div class="header-line"></div>
+</header>
+
+<style>
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--space-12);
+    position: relative;
+
+    .text-primary {
+      color: var(--color-primary);
+    }
+
+  }
+  
+  .page-header h1 {
+    margin-bottom: var(--space-2);
+  }
+  
+  .subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-light);
+    margin-bottom: var(--space-4);
+    font-weight: var(--font-weight-normal);
+  }
+  
+  .header-line {
+    width: 80px;
+    height: 4px;
+    background-color: var(--color-primary);
+    margin: var(--space-4) auto;
+  }
+</style>

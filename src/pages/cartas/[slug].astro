@@ -1,0 +1,444 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+// Generar todas las rutas posibles
+export async function getStaticPaths() {
+  const cartasEntries = await getCollection('cartas');
+  
+  return cartasEntries.map(carta => {
+    // Crear un slug a partir del ID de la carta
+    const slug = carta.data.id;
+      
+    return {
+      params: { slug },
+      props: { carta },
+    };
+  });
+}
+
+// Obtener la carta específica para esta página
+const { carta } = Astro.props;
+const { 
+  id, 
+  name, 
+  title, 
+  card_class, 
+  expansion, 
+  number_in_series, 
+  artist, 
+  strength, 
+  health, 
+  ability_description, 
+  game, 
+  quote, 
+  rarity, 
+  rarity_level, 
+  pixels_cost, 
+  image 
+} = carta.data;
+
+// Función para obtener el color de fondo según la rareza
+const getRarezaColor = (rareza: string) => {
+  switch (rareza.toLowerCase()) {
+    case 'común':
+      return 'var(--color-background-light)';
+    case 'rara':
+      return '#2a4d69';
+    case 'épica':
+      return '#5e3a98';
+    case 'legendaria':
+      return '#8c6b2a';
+    default:
+      return 'var(--color-background-light)';
+  }
+};
+
+const rarezaColor = getRarezaColor(rarity);
+
+// Obtener otras cartas relacionadas (de la misma clase)
+const cartasRelacionadas = await getCollection('cartas', ({ data }) => {
+  return data.card_class === card_class && data.id !== id && data.publicado === true;
+});
+
+// Limitar a 3 cartas relacionadas
+const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
+---
+
+<Layout title={`${name} | Pixel Forge`} description={ability_description}>
+  <div class="carta-detalle-container">
+    <div class="container">
+      <a href="/cartas" class="volver-link">
+        &larr; Volver a todas las cartas
+      </a>
+      
+      <div class="carta-detalle">
+        <div class="carta-imagen">
+          <div class="carta-marco" style={`border-color: ${rarezaColor};`}>
+            <img src={image} alt={name} />
+            <div class="carta-expansion">{expansion} · {number_in_series}</div>
+            <div class="carta-rareza" style={`background-color: ${rarezaColor};`}>
+              {rarity} {"★".repeat(rarity_level)}
+            </div>
+          </div>
+        </div>
+        
+        <div class="carta-info">
+          <div class="carta-header">
+            <h1>{name}</h1>
+            <p class="carta-subtitle">{title}</p>
+            <span class="carta-tipo">{card_class}</span>
+          </div>
+          
+          <div class="carta-stats">
+            <div class="stat-grupo">
+              <span class="stat-label">Fuerza</span>
+              <span class="stat-valor strength">{strength}</span>
+            </div>
+            
+            <div class="stat-grupo">
+              <span class="stat-label">Vida</span>
+              <span class="stat-valor health">{health}</span>
+            </div>
+            
+            <div class="stat-grupo">
+              <span class="stat-label">Coste</span>
+              <span class="stat-valor cost">{pixels_cost}</span>
+            </div>
+          </div>
+          
+          <div class="carta-ability">
+            <h2>Habilidad</h2>
+            <p>{ability_description}</p>
+          </div>
+          
+          <div class="carta-game">
+            <h2>Juego</h2>
+            <p>{game}</p>
+          </div>
+          
+          <div class="carta-quote">
+            <h2>Cita</h2>
+            <blockquote>"{quote}"</blockquote>
+          </div>
+          
+          <div class="carta-artist">
+            <h2>Artista</h2>
+            <p>{artist}</p>
+          </div>
+          
+          <div class="carta-compartir">
+            <h2>Compartir</h2>
+            <div class="compartir-botones">
+              <a href={`https://twitter.com/intent/tweet?text=¡Mira esta carta de Pixel Forge: ${name}!&url=${Astro.url}`} target="_blank" rel="noopener noreferrer" class="compartir-boton twitter">
+                Twitter
+              </a>
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${Astro.url}`} target="_blank" rel="noopener noreferrer" class="compartir-boton facebook">
+                Facebook
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {cartasRelacionadasLimitadas.length > 0 && (
+        <div class="cartas-relacionadas">
+          <h2>Cartas relacionadas</h2>
+          <div class="cartas-relacionadas-grid">
+            {cartasRelacionadasLimitadas.map(cartaRelacionada => {
+              return (
+                <a href={`/cartas/${cartaRelacionada.data.id}`} class="carta-relacionada">
+                  <img src={cartaRelacionada.data.image} alt={cartaRelacionada.data.name} />
+                  <div class="carta-relacionada-info">
+                    <h3>{cartaRelacionada.data.name}</h3>
+                    <span class="carta-relacionada-tipo">{cartaRelacionada.data.card_class}</span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .carta-detalle-container {
+    padding: var(--space-8) 0;
+  }
+  
+  .volver-link {
+    display: inline-block;
+    margin-bottom: var(--space-6);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+    transition: color 0.3s ease;
+  }
+  
+  .volver-link:hover {
+    color: var(--color-primary-dark);
+  }
+  
+  .carta-detalle {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+  
+  @media (min-width: 768px) {
+    .carta-detalle {
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+  
+  .carta-imagen {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .carta-marco {
+    position: relative;
+    border: 8px solid;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    max-width: 350px;
+  }
+  
+  .carta-marco img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  
+  .carta-expansion {
+    position: absolute;
+    top: var(--space-4);
+    left: var(--space-4);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: var(--font-size-xs);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+  }
+  
+  .carta-rareza {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    color: var(--color-text);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+  }
+  
+  .carta-header {
+    margin-bottom: var(--space-6);
+  }
+  
+  .carta-header h1 {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-2);
+  }
+  
+  .carta-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+  
+  .carta-tipo {
+    display: inline-block;
+    font-size: var(--font-size-sm);
+    background-color: var(--color-primary-dark);
+    color: var(--color-text);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  .carta-stats {
+    display: flex;
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+  }
+  
+  .stat-grupo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--color-background-light);
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-md);
+    min-width: 100px;
+  }
+  
+  .stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+  }
+  
+  .stat-valor {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+  }
+  
+  .strength {
+    color: var(--color-secondary);
+  }
+  
+  .health {
+    color: var(--color-info);
+  }
+  
+  .cost {
+    color: var(--color-warning);
+  }
+  
+  .carta-ability,
+  .carta-game,
+  .carta-quote,
+  .carta-artist,
+  .carta-compartir {
+    margin-bottom: var(--space-6);
+  }
+  
+  .carta-ability h2,
+  .carta-game h2,
+  .carta-quote h2,
+  .carta-artist h2,
+  .carta-compartir h2 {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-3);
+  }
+  
+  .carta-ability p {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-md);
+    line-height: 1.6;
+  }
+  
+  .carta-game p,
+  .carta-artist p {
+    color: var(--color-text);
+    font-size: var(--font-size-md);
+  }
+  
+  .carta-quote blockquote {
+    font-style: italic;
+    color: var(--color-text-muted);
+    padding-left: var(--space-4);
+    border-left: 3px solid var(--color-primary);
+    font-size: var(--font-size-md);
+    line-height: 1.6;
+  }
+  
+  .compartir-botones {
+    display: flex;
+    gap: var(--space-3);
+  }
+  
+  .compartir-boton {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-medium);
+    text-align: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .twitter {
+    background-color: #1DA1F2;
+    color: white;
+  }
+  
+  .twitter:hover {
+    background-color: #0c85d0;
+  }
+  
+  .facebook {
+    background-color: #4267B2;
+    color: white;
+  }
+  
+  .facebook:hover {
+    background-color: #365899;
+  }
+  
+  .cartas-relacionadas {
+    margin-top: var(--space-12);
+  }
+  
+  .cartas-relacionadas h2 {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-6);
+    text-align: center;
+  }
+  
+  .cartas-relacionadas-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-6);
+  }
+  
+  @media (min-width: 640px) {
+    .cartas-relacionadas-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .cartas-relacionadas-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .carta-relacionada {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-background-light);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .carta-relacionada:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .carta-relacionada img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+  
+  .carta-relacionada-info {
+    padding: var(--space-3);
+  }
+  
+  .carta-relacionada-info h3 {
+    font-family: var(--font-secondary);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-1);
+    font-size: var(--font-size-md);
+  }
+  
+  .carta-relacionada-tipo {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+</style>

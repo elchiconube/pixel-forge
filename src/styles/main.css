@@ -1,0 +1,22 @@
+/* Variables */
+@import './variables/colors.css';
+@import './variables/typography.css';
+@import './variables/spacing.css';
+
+/* Base */
+@import './base/reset.css';
+@import './base/typography.css';
+@import './base/utilities.css';
+
+/* Utilidades */
+@import './utils/container.css';
+@import './utils/flex.css';
+
+/* Componentes - Se importarán automáticamente desde los archivos .astro */
+
+/* Layouts - Se importarán automáticamente desde los archivos .astro */
+
+/* 
+  Esta es la hoja de estilos principal que importa todos los demás estilos.
+  Los componentes y layouts tienen sus propios estilos encapsulados en sus archivos .astro
+*/

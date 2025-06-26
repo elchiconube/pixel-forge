@@ -1,0 +1,94 @@
+/* 
+  Reset moderno que mantiene los estilos útiles del navegador
+  mientras elimina inconsistencias
+*/
+
+/* Box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Eliminar márgenes y padding por defecto */
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  /* position: absolute;
+  width: 100%;
+  top: 0;
+  padding-top: 90px; */
+}
+
+/* Configuración de body */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: var(--line-height-normal);
+  font-family: var(--font-secondary);
+  color: var(--color-text);
+  background: linear-gradient(to bottom, #081137, #121212);
+  background-attachment: fixed;
+}
+
+/* Hacer que las imágenes sean más fáciles de trabajar */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Heredar fuentes para inputs y botones */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Eliminar estilos de lista cuando no son necesarios */
+ul[class],
+ol[class] {
+  list-style: none;
+  padding: 0;
+}
+
+/* Eliminar animaciones y transiciones para personas que prefieren no verlas */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Enlaces sin subrayado por defecto */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Hacer que los elementos tabulables tengan un outline visible */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

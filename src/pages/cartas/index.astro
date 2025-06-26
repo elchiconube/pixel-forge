@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+const cards: CollectionEntry<'cards'>[] = await getCollection('cards');
+  
+---
+
+<Layout title="Cartas | Pixel Forge" description="Explora todas las cartas disponibles en Pixel Forge">
+  <div class="cards-container">
+    <div class="container">
+      <PageHeader 
+        regularText="Colección de" 
+        highlightedText="Cartas" 
+        subtitle="Explora todas las cartas disponibles en el universo de Pixel Forge."
+      />
+  
+      <div class="card-grid">
+        {cards.map((card: CollectionEntry<'cards'>) => (
+          <a href={`/cartas/${card.id}`}>
+            <Card
+              id={card.id}
+              title={card.data.name}
+              image={card.data.image}
+              className="card-item"
+            />
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .cards-container {
+    padding: var(--space-8) 0;
+  }
+  
+  .cards-header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+  }
+  
+  .cards-header h1 {
+    margin-bottom: var(--space-2);
+  }
+  
+  .cards-header p {
+    color: var(--color-text-muted);
+  }
+  
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-8);
+    justify-items: center;
+    padding: var(--space-4);
+  }
+  
+  .card-grid a {
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  @media (min-width: 640px) {
+    .card-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .card-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .card-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
