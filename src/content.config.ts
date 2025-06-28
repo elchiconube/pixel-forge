@@ -1,9 +1,9 @@
 // Define el esquema para las colecciones de contenido
 import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders'; 
+import { file } from 'astro/loaders'; 
 
 const cards = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/cards" }),
+  loader: file("src/data/cards.json"),
   schema: z.object({
     id: z.string(),
     name: z.string(),
@@ -23,7 +23,6 @@ const cards = defineCollection({
     rarity_level: z.number(),
     language: z.string(),
     image: z.string(),
-    published: z.boolean().default(true),
   }),
 });
 

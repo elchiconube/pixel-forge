@@ -1,24 +1,20 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import Card from '../../components/Card.astro'
+import { getCollection, render } from 'astro:content';
 
-// Generar todas las rutas posibles
+// 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
-  const cartasEntries = await getCollection('cartas');
-  
-  return cartasEntries.map(carta => {
-    // Crear un slug a partir del ID de la carta
-    const slug = carta.data.id;
-      
-    return {
-      params: { slug },
-      props: { carta },
-    };
-  });
+  const cards = await getCollection('cards');
+  return cards.map(card => ({
+    params: { id: card.id },
+    props: { card },
+  }));
 }
 
+
 // Obtener la carta específica para esta página
-const { carta } = Astro.props;
+const { card } = Astro.props;
 const { 
   id, 
   name, 
@@ -36,7 +32,7 @@ const {
   rarity_level, 
   pixels_cost, 
   image 
-} = carta.data;
+} = card.data;
 
 // Función para obtener el color de fondo según la rareza
 const getRarezaColor = (rareza: string) => {
@@ -57,8 +53,8 @@ const getRarezaColor = (rareza: string) => {
 const rarezaColor = getRarezaColor(rarity);
 
 // Obtener otras cartas relacionadas (de la misma clase)
-const cartasRelacionadas = await getCollection('cartas', ({ data }) => {
-  return data.card_class === card_class && data.id !== id && data.publicado === true;
+const cartasRelacionadas = await getCollection('cards', ({ data }) => {
+  return data.card_class === card_class && data.id !== id;
 });
 
 // Limitar a 3 cartas relacionadas
@@ -66,31 +62,40 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
 ---
 
 <Layout title={`${name} | Pixel Forge`} description={ability_description}>
-  <div class="carta-detalle-container">
+  <div class="card-detalle-container">
     <div class="container">
       <a href="/cartas" class="volver-link">
         &larr; Volver a todas las cartas
       </a>
       
-      <div class="carta-detalle">
-        <div class="carta-imagen">
-          <div class="carta-marco" style={`border-color: ${rarezaColor};`}>
-            <img src={image} alt={name} />
-            <div class="carta-expansion">{expansion} · {number_in_series}</div>
-            <div class="carta-rareza" style={`background-color: ${rarezaColor};`}>
-              {rarity} {"★".repeat(rarity_level)}
-            </div>
-          </div>
+      <div class="card-detalle">
+        <div class="card-imagen">
+          <Card
+              id={id}
+              title={name}
+              image={image}
+              className="card-item"
+            />
         </div>
         
-        <div class="carta-info">
-          <div class="carta-header">
+        <div class="card-info">
+          <div class="card-header">
             <h1>{name}</h1>
-            <p class="carta-subtitle">{title}</p>
-            <span class="carta-tipo">{card_class}</span>
+            <p class="card-subtitle">{title}</p>
+            <span class="card-tipo">{card_class}</span>
+            <div class="card-expansion">{expansion} · {number_in_series}</div>
+            <div class="card-rareza" style={`background-color: ${rarezaColor};`}>
+              {rarity} {"★".repeat(rarity_level)}
+            </div>
+
           </div>
           
-          <div class="carta-stats">
+          <div class="card-stats">
+            <div class="stat-grupo">
+              <span class="stat-label">Coste</span>
+              <span class="stat-valor cost">{pixels_cost}</span>
+            </div>
+
             <div class="stat-grupo">
               <span class="stat-label">Fuerza</span>
               <span class="stat-valor strength">{strength}</span>
@@ -101,33 +106,30 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
               <span class="stat-valor health">{health}</span>
             </div>
             
-            <div class="stat-grupo">
-              <span class="stat-label">Coste</span>
-              <span class="stat-valor cost">{pixels_cost}</span>
-            </div>
+           
           </div>
           
-          <div class="carta-ability">
+          <div class="card-ability">
             <h2>Habilidad</h2>
             <p>{ability_description}</p>
           </div>
           
-          <div class="carta-game">
+          <div class="card-game">
             <h2>Juego</h2>
             <p>{game}</p>
           </div>
           
-          <div class="carta-quote">
+          <div class="card-quote">
             <h2>Cita</h2>
             <blockquote>"{quote}"</blockquote>
           </div>
           
-          <div class="carta-artist">
+          <div class="card-artist">
             <h2>Artista</h2>
             <p>{artist}</p>
           </div>
           
-          <div class="carta-compartir">
+          <div class="card-compartir">
             <h2>Compartir</h2>
             <div class="compartir-botones">
               <a href={`https://twitter.com/intent/tweet?text=¡Mira esta carta de Pixel Forge: ${name}!&url=${Astro.url}`} target="_blank" rel="noopener noreferrer" class="compartir-boton twitter">
@@ -147,11 +149,11 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
           <div class="cartas-relacionadas-grid">
             {cartasRelacionadasLimitadas.map(cartaRelacionada => {
               return (
-                <a href={`/cartas/${cartaRelacionada.data.id}`} class="carta-relacionada">
+                <a href={`/cartas/${cartaRelacionada.data.id}`} class="card-relacionada">
                   <img src={cartaRelacionada.data.image} alt={cartaRelacionada.data.name} />
-                  <div class="carta-relacionada-info">
+                  <div class="card-relacionada-info">
                     <h3>{cartaRelacionada.data.name}</h3>
-                    <span class="carta-relacionada-tipo">{cartaRelacionada.data.card_class}</span>
+                    <span class="card-relacionada-tipo">{cartaRelacionada.data.card_class}</span>
                   </div>
                 </a>
               );
@@ -164,7 +166,7 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
 </Layout>
 
 <style>
-  .carta-detalle-container {
+  .card-detalle-container {
     padding: var(--space-8) 0;
   }
   
@@ -180,42 +182,29 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
     color: var(--color-primary-dark);
   }
   
-  .carta-detalle {
+  .card-detalle {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-8);
   }
   
   @media (min-width: 768px) {
-    .carta-detalle {
+    .card-detalle {
       grid-template-columns: 1fr 2fr;
     }
   }
   
-  .carta-imagen {
-    display: flex;
-    justify-content: center;
+
+  .card-imagen {
+    margin: 0 auto;
+    > div {
+      position: sticky;
+      top: var(--space-4);
+    }
   }
+
   
-  .carta-marco {
-    position: relative;
-    border: 8px solid;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-    max-width: 350px;
-  }
-  
-  .carta-marco img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-  
-  .carta-expansion {
-    position: absolute;
-    top: var(--space-4);
-    left: var(--space-4);
+  .card-expansion {
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
     font-size: var(--font-size-xs);
@@ -223,10 +212,7 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
     border-radius: var(--radius-full);
   }
   
-  .carta-rareza {
-    position: absolute;
-    top: var(--space-4);
-    right: var(--space-4);
+  .card-rareza {
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius-full);
     color: var(--color-text);
@@ -234,24 +220,24 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
     text-transform: uppercase;
   }
   
-  .carta-header {
+  .card-header {
     margin-bottom: var(--space-6);
   }
   
-  .carta-header h1 {
+  .card-header h1 {
     font-family: var(--font-secondary);
     font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
     margin-bottom: var(--space-2);
   }
   
-  .carta-subtitle {
+  .card-subtitle {
     font-size: var(--font-size-lg);
     color: var(--color-text-muted);
     margin-bottom: var(--space-3);
   }
   
-  .carta-tipo {
+  .card-tipo {
     display: inline-block;
     font-size: var(--font-size-sm);
     background-color: var(--color-primary-dark);
@@ -262,7 +248,7 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
     font-weight: var(--font-weight-semibold);
   }
   
-  .carta-stats {
+  .card-stats {
     display: flex;
     gap: var(--space-6);
     margin-bottom: var(--space-6);
@@ -302,26 +288,26 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
     color: var(--color-warning);
   }
   
-  .carta-ability,
-  .carta-game,
-  .carta-quote,
-  .carta-artist,
-  .carta-compartir {
+  .card-ability,
+  .card-game,
+  .card-quote,
+  .card-artist,
+  .card-compartir {
     margin-bottom: var(--space-6);
   }
   
-  .carta-ability h2,
-  .carta-game h2,
-  .carta-quote h2,
-  .carta-artist h2,
-  .carta-compartir h2 {
+  .card-ability h2,
+  .card-game h2,
+  .card-quote h2,
+  .card-artist h2,
+  .card-compartir h2 {
     font-family: var(--font-secondary);
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-semibold);
     margin-bottom: var(--space-3);
   }
   
-  .carta-ability p {
+  .card-ability p {
     background-color: rgba(0, 0, 0, 0.05);
     padding: var(--space-4);
     border-radius: var(--radius-md);
@@ -329,13 +315,13 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
     line-height: 1.6;
   }
   
-  .carta-game p,
-  .carta-artist p {
+  .card-game p,
+  .card-artist p {
     color: var(--color-text);
     font-size: var(--font-size-md);
   }
   
-  .carta-quote blockquote {
+  .card-quote blockquote {
     font-style: italic;
     color: var(--color-text-muted);
     padding-left: var(--space-4);
@@ -406,7 +392,7 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
     }
   }
   
-  .carta-relacionada {
+  .card-relacionada {
     display: flex;
     align-items: center;
     background-color: var(--color-background-light);
@@ -415,29 +401,29 @@ const cartasRelacionadasLimitadas = cartasRelacionadas.slice(0, 3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
-  .carta-relacionada:hover {
+  .card-relacionada:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
   }
   
-  .carta-relacionada img {
+  .card-relacionada img {
     width: 80px;
     height: 80px;
     object-fit: cover;
   }
   
-  .carta-relacionada-info {
+  .card-relacionada-info {
     padding: var(--space-3);
   }
   
-  .carta-relacionada-info h3 {
+  .card-relacionada-info h3 {
     font-family: var(--font-secondary);
     font-weight: var(--font-weight-semibold);
     margin-bottom: var(--space-1);
     font-size: var(--font-size-md);
   }
   
-  .carta-relacionada-tipo {
+  .card-relacionada-tipo {
     font-size: var(--font-size-xs);
     color: var(--color-text-muted);
   }

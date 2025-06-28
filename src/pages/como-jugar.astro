@@ -15,28 +15,44 @@ import PageHeader from '../components/PageHeader.astro';
           <h2 class="together"><span class="section-number">01</span> Preparación del juego</h2>
           <div class="section-content">
             <ul class="game-list">
-              <li>Cada jugador necesita un mazo con 10 cartas.</li>
+              <li>Cada jugador comienza con un mazo de 15 cartas seleccionadas aleatoriamente.</li>
               <li>Se reparten 3 cartas al azar al comenzar.</li>
-              <li>Decidid quién empieza lanzando una moneda o con un dado.</li>
+              <li>Cada jugador comienza con 1 píxel (recurso para jugar cartas).</li>
+              <li>El jugador humano siempre juega primero.</li>
             </ul>
           </div>
         </div>
         
         <div class="game-section">
-          <h2 class="together"><span class="section-number">02</span> Turnos de juego</h2>
+          <h2 class="together"><span class="section-number">02</span> Sistema de píxeles</h2>
+          <div class="section-content">
+            <p>Los píxeles son el recurso necesario para jugar cartas:</p>
+            <ul class="game-list">
+              <li>Comienzas con 1 píxel en el primer turno.</li>
+              <li>Cada turno, tu máximo de píxeles aumenta en 1 (hasta un máximo de 10).</li>
+              <li>Tus píxeles se recargan completamente al inicio de tu turno.</li>
+              <li>Cada carta tiene un coste en píxeles (visible en la esquina superior izquierda).</li>
+              <li>Solo puedes jugar cartas cuyo coste sea igual o menor a tus píxeles disponibles.</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="game-section">
+          <h2 class="together"><span class="section-number">03</span> Turnos de juego</h2>
           <div class="section-content">
             <p>En tu turno puedes:</p>
             <ul class="game-list">
-              <li>Robar una carta.</li>
-              <li>Jugar hasta dos cartas de tu mano.</li>
+              <li>Robar una carta al inicio del turno.</li>
+              <li>Jugar tantas cartas como te permitan tus píxeles disponibles.</li>
               <li>Atacar con tus cartas ya en juego.</li>
               <li>Usar habilidades especiales.</li>
+              <li>Terminar tu turno cuando hayas completado tus acciones.</li>
             </ul>
           </div>
         </div>
         
         <div class="game-section">
-          <h2 class="together"><span class="section-number">03</span> Combate</h2>
+          <h2 class="together"><span class="section-number">04</span> Combate</h2>
           <div class="section-content">
             <p>Cuando atacas:</p>
             <ul class="game-list">
@@ -49,7 +65,7 @@ import PageHeader from '../components/PageHeader.astro';
         </div>
         
         <div class="game-section">
-          <h2 class="together"><span class="section-number">04</span> Habilidades especiales</h2>
+          <h2 class="together"><span class="section-number">05</span> Habilidades especiales</h2>
           <div class="section-content">
             <p>Cada carta tiene una habilidad única que puede cambiar las reglas del juego. Algunas habilidades comunes son:</p>
             <ul class="game-list special-abilities">
@@ -62,7 +78,7 @@ import PageHeader from '../components/PageHeader.astro';
         </div>
         
         <div class="game-section">
-          <h2 class="together"><span class="section-number">05</span> Victoria</h2>
+          <h2 class="together"><span class="section-number">06</span> Victoria</h2>
           <div class="section-content">
             <p>Ganas la partida si:</p>
             <ul class="game-list victory-conditions">
